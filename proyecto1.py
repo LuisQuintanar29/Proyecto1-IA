@@ -1,5 +1,4 @@
-from traceback import print_tb
-import numpy as np
+
 class Mapa:
     rutas = []
     estados ={
