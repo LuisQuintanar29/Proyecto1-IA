@@ -1,5 +1,8 @@
 
 
+from runpy import run_path
+
+
 class Mapa:
     rutas = []
     expandidas = []
@@ -58,6 +61,7 @@ class Mapa:
                         ls = ls + lst
                         ls.append(i)
                         self.rutas.append(ls)
+                        self.rutas[-1][0] = self.rutas[-1][0] + self.getMapa()[ciudad].get(i)
         for i in indices:
             del self.rutas[i] 
         self.expandidas.append(ciudad)
@@ -69,7 +73,7 @@ class Mapa:
         while (self.ciudadOrigen not in self.getMapa()):
             print('Ciudad de Origen no encontrada')
             self.ciudadOrigen = input('Ingrese una ciudad de Origen Válida: ')
-        ls=[]
+        ls=[0]
         ls.append(self.ciudadOrigen)
         self.rutas.append(ls)
 
