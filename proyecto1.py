@@ -227,8 +227,14 @@ class Mapa:
             self.borrarRepetidos()
             # Si la ruta de menor costo nos lleva al destino imprimimos un mensaje de éxito
             if self.buscaRutaMenor() == self.ciudadDestino:
-                print("RUTA MÍNIMA ENCONTRADA")
-    
+                print("RUTA MÍNIMA ENCONTRADA\n")
+                for rutas in self.rutas:
+                    if rutas[1] == self.ciudadOrigen and rutas[-1] == self.ciudadDestino:
+                       print("\tCOSTO: "+str(rutas[0]))
+                       stri = "\tRUTA "
+                       for r in range(len(rutas)-1):
+                           stri = stri +"-> " + rutas[r+1]
+                print(stri)
     # Constructor. Cuando se instancia un objeto, ordena el mapa
     def __init__(self): 
         self.ordenaMapa()
