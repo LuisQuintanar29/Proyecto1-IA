@@ -1,4 +1,7 @@
 
+from unittest.util import strclass
+
+
 class Mapa:
     rutas = []
     expandidas = []
@@ -54,42 +57,68 @@ class Mapa:
 
     # Buscamos las rutas que lleguen a la misma ciudad
     def buscarRepetidos(self):
+        # Variable axiliar para hacer los cambios
         aux = {}
+        # Variable con las rutas repetidas
         rep = {}
+        # Para cada ruta de la lista de rutas
         for ruta in self.rutas:
+            # Guardamos la lista de ciudades al final de la ruta
+            # que no existen en aux
             if ruta[-1] not in aux:
+                # Cuando no existe, sólo se ha guardado una vez
                 aux[ruta[-1]] = 1
             else:
+                # Si existe, aumentamos el contador en uno
                 aux[ruta[-1]] = aux[ruta[-1]] + 1
+        # Guaramos las ciudades y la cantidad de veces que se encuentran en las rutas
         for k,v in aux.items():
+            # Si es mayor a uno, guardamos la ciudad, debido a que se repite
             if v > 1:
                 rep[k] = v
+        # Reiniciamos la variable auxiliar
         aux = {}
+        # Le asinamos al diccionario, la lista de ciudades repetidas, y le 
+        # añadimos una lista que guardará el costo de cada ruta
         for i in rep:
             aux[i] = []
-
+        # Recorremos las rutas en la lista de rutas
         for ruta in self.rutas:
+            # Para cada ciudad repetida que existe
             for r in aux:
+                # Si la ultima ciudad de la ruta, es una ciudad repetida
                 if ruta[-1] == r:
+                    # Guardamos el costo de la ruta
                     aux[r].append(ruta[0])
+        # Le asignamos las ciudades repetidas y el costo de la
+        # ruta ya ordenamos de menor a mayor y regresamos ese diccionario
         for i in aux:
             rep[i] = sorted(aux[i])
         return rep
 
     # Borramos rutas repetidas
     def borrarRepetidos(self):
+        # Buscamos las rutas que se repiten y el costo de cada una de ellas
         rep = self.buscarRepetidos().copy()
+        # Si existen rutas repetidas
         if len(rep) != 0:
+            # Contador para saber el indice
             j = 0
+            # Buscamos en cada ruta de la lista de rutas
             for ruta in self.rutas:
+                # Para cada ciudad y costos repetidos
                 for k,v in rep.items():
+                    # Para cada costo de las distintas rutas
+                    # con ciudades repetidas
                     for d in v:
+                        # Si la ciudad repetida coincide con el de la ruta
+                        # y además la distancia coincide con la distancia repetida
+                        # y no es el valor mínimo para llegar a la ciudad
                         if(k == ruta[-1] and ruta[0] == d and d !=v[0]):
+                            # Eliminamos la ruta
                             del self.rutas[j]
-                j = j+1
-
-            
-            
+                # Aumentamos el índice
+                j = j+1        
 
     # Expande la ciudad en las rutas que la contengan
     def expandirCiudad(self, ciudad):
@@ -156,23 +185,47 @@ class Mapa:
     
     # Imprime ciudades expandidas y lista de rutas
     def imprimeDatos(self):
-        print("CIUDADES EXPANDIDAS")
-        print(e.expandidas)
-        print("RUTAS")
-        print(e.rutas)
+        exp = "CIUDADES EXPANDIDAS:\n \t "
+        # Para cada ciudad expandida
+        for i in self.expandidas:
+            # Concatenamos la ciudad para darle formato
+            exp = exp + i + ", "
+
+        rutas = "RUTAS: \n \t"
+        # Para cada ruta de la lista de rutas
+        for i in self.rutas:
+            # Agregamos el costo de la ruta
+            rutas = rutas + str(i[0])
+            # Para cada ciudad de la ruta
+            for j in range(len(i)-1):
+                # Le damos formato para imprimir
+                rutas = rutas + "->" + str(i[j+1])
+            rutas = rutas + "\n\t"
+        # Imprimimos las ciudades expandidad
+        print(exp)
+        # Imprimimos las rutas de las ciudades
+        print(rutas)
     
     # Busqueda de Costo Uniforme
     def BCU(self):
+        # Leemos las ciudades de Origen y Desino
         self.leerCiudades()
-
-        self.expandirCiudad(self.ciudadOrigen)
+        # Imprimimos la ciudad de origen y el costo
         self.imprimeDatos()
-
+        # Expandimos la ciudad de origen
+        self.expandirCiudad(self.ciudadOrigen)
+        # Imprimimos los datos nuevos
+        self.imprimeDatos()
+        # Mientras que la ruta de menor costo no nos lleve a la ciudad de Destino
         while self.buscaRutaMenor() != self.ciudadDestino:
+            # Expandimos la ciudad de menor costo
             self.expandirCiudad(self.buscaRutaMenor())
+            # Imprimimos los nuevos dato
             self.imprimeDatos()
+            # Borramos las rutas que lleguen a la misma ciudad y que 
+            # impliquen un mayor costo
             self.borrarRepetidos()
-
+            # Si la ruta de menor costo nos lleva al destino imprimimos un mensaje de éxito
             if self.buscaRutaMenor() == self.ciudadDestino:
                 print("RUTA MÍNIMA ENCONTRADA")
     
@@ -180,5 +233,7 @@ class Mapa:
     def __init__(self): 
         self.ordenaMapa()
 
+# Creamos un mapa
 e = Mapa()
+# Iniciamos el algoritmo de Búsqueda de Costo Uniforme
 e.BCU()
