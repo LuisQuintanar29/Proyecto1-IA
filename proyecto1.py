@@ -1,5 +1,7 @@
-
+from traceback import print_tb
+import numpy as np
 class Mapa:
+    rutas = []
     estados ={
         'Oradea':{'Zerind':71,'Sibiu':151},
         'Zerind':{'Arad':75,'Oradea':71},
@@ -22,13 +24,16 @@ class Mapa:
         'Iasi':{'Vaslui':92,'Neamt':87},
         'Neamt':{'Iasi':87}
     }
+    
     # Devuelve el diccionario de los estados
     def getMapa(self):
         return self.estados
+    
     # Imprime cada Estados con sus vecinos y el costo
     def printEstados(self):
         for k in self.estados:
             print(k,":",self.estados[k])
+   
     # Ordena el mapa por orden alfanumerico, tanto los estados como sus vecinos
     def ordenaMapa(self):
         tempEstados = self.estados
@@ -38,10 +43,30 @@ class Mapa:
             self.estados[p] = {}
             for q in sorted(tempEstados[p]):
                 self.estados[p][q] = tempEstados[p][q]
+
+    # Expande la ciudad en las rutas que la contengan
+    def expandirCiudad(self, ciudad):
+        pass
+    
+    # Lee las ciudades de origen y de destino
+    def leerCiudades(self):
+        # Leemos la ciudad de origen
+        self.ciudadOrigen = input('Ingrese la ciudad de Origen: ')
+        while (self.ciudadOrigen not in self.getMapa()):
+            print('Ciudad de Origen no encontrada')
+            self.ciudadOrigen = input('Ingrese una ciudad de Origen Válida: ')
+        self.rutas.append(self.ciudadOrigen)
+
+        # Leemos la ciudad de destino
+        self.ciudadDestino = input('Ingrese la ciudad de Destino: ')
+        while (self.ciudadDestino not in self.getMapa()):
+            print('Ciudad de Destino no encontrada')
+            self.ciudadDestino = input('Ingrese una ciudad de Destino Válida: ')
+    
     # Constructor. Cuando se instancia un objeto, ordena el mapa
     def __init__(self): 
         self.ordenaMapa()
-        pass
 
 e = Mapa()
-e.printEstados()
+e.leerCiudades() 
+print(e.rutas)
