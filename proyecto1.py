@@ -1,11 +1,9 @@
 
 
-from runpy import run_path
-
-
 class Mapa:
     rutas = []
     expandidas = []
+    encontradas = []
     estados ={
         'Oradea':{'Zerind':71,'Sibiu':151},
         'Zerind':{'Arad':75,'Oradea':71},
@@ -34,38 +32,73 @@ class Mapa:
         return self.estados
     
     # Imprime cada Estados con sus vecinos y el costo
-    def printEstados(self):
+    def printMapa(self):
         for k in self.estados:
             print(k,":",self.estados[k])
    
     # Ordena el mapa por orden alfanumerico, tanto los estados como sus vecinos
     def ordenaMapa(self):
+        # Variable auxiliar
         tempEstados = self.estados
+        # Reiniciamos los estados
         self.estados = {}
+        # Para cada ciudad en los estados ordenados
         for p in sorted(tempEstados):
+            # Agregamos los estados
             self.estados[p] = tempEstados[p]
+            # Borramos a sus vecinos
             self.estados[p] = {}
+            # Para cada vecino ordenado
             for q in sorted(tempEstados[p]):
+                # Agregamos a los vecinos
                 self.estados[p][q] = tempEstados[p][q]
 
     # Expande la ciudad en las rutas que la contengan
     def expandirCiudad(self, ciudad):
+        # Guardará los indices donde se encuentra la ciudad expandida
         indices = []
-        for c in range(len(self.rutas)):
-            if ciudad in self.rutas[c] :
-                lst = self.rutas[c]
-                indices.append(c)
-                for i in self.getMapa()[ciudad].keys():
-                    if i not in self.expandidas:
+        # Recorremos todas las ciudades en las rutas
+        for cdad in range(len(self.rutas)):
+            # Si se encuentra la ciudad a expandir
+            if ciudad in self.rutas[cdad] :
+                # Guardamos la lista para agregar las expansiones
+                lst = self.rutas[cdad]
+                # El indice donde se encuentra la ciudad se guarda
+                indices.append(cdad)
+                # Para cada vecino de la ciudad a expandir
+                for vecino in self.getMapa()[ciudad].keys():
+                    # Si el vecino no se ha expandido
+                    if vecino not in self.expandidas:
                         ls = []
                         ls = ls + lst
-                        ls.append(i)
+                        # Agregamos al vecino en la ruta a expandir
+                        ls.append(vecino)
+                        # Lo añadimos a la lista de rutas
                         self.rutas.append(ls)
-                        self.rutas[-1][0] = self.rutas[-1][0] + self.getMapa()[ciudad].get(i)
+                        # Sumamos el costo de viaje a la ciudad agregada
+                        self.rutas[-1][0] = self.rutas[-1][0] + self.getMapa()[ciudad].get(vecino)
+        # Borramos las rutas de las ciudades antes de ser expandidas
         for i in indices:
             del self.rutas[i] 
         self.expandidas.append(ciudad)
     
+    # Buscamos la ruta con menos costo
+    def buscaRutaMenor(self):
+        # Costos de cada ruta en las rutas
+        costos = []
+        # Para cada ruta en las rutas
+        for ruta in self.rutas:
+            # Guardamos los costos de cada una
+            costos.append(ruta[0])
+        # El minimo es el primero de la lista ordenada
+        min = sorted(costos)[0]
+        # Buscamos en cada ruta de la ruta
+        for ruta in self.rutas:
+            # Si el costo de la ruta es el mínimo
+            if ruta[0] == min:
+                # Regresamos la siguiente ciudad a expandir
+                return ruta[-1]
+
     # Lee las ciudades de origen y de destino
     def leerCiudades(self):
         # Leemos la ciudad de origen
@@ -89,12 +122,19 @@ class Mapa:
 
 e = Mapa()
 e.leerCiudades() 
+
 e.expandirCiudad(e.ciudadOrigen)
-print(e.rutas)
 print(e.expandidas)
-e.expandirCiudad('Sibiu')
 print(e.rutas)
+
+e.expandirCiudad(e.buscaRutaMenor())
 print(e.expandidas)
-e.expandirCiudad('Rimnicu Vilcea')
 print(e.rutas)
+
+e.expandirCiudad(e.buscaRutaMenor())
 print(e.expandidas)
+print(e.rutas)
+
+e.expandirCiudad(e.buscaRutaMenor())
+print(e.expandidas)
+print(e.rutas)
