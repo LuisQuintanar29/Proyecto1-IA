@@ -1,11 +1,11 @@
 
-from unittest.util import strclass
-
 
 class Mapa:
+    # Lista de rutas posibles
     rutas = []
+    # Lista de ciudades expandidas
     expandidas = []
-    encontradas = []
+    # Mapa de estados con sus vecinos
     estados ={
         'Oradea':{'Zerind':71,'Sibiu':151},
         'Zerind':{'Arad':75,'Oradea':71},
