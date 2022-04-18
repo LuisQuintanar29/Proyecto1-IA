@@ -1,6 +1,8 @@
 
+
 class Mapa:
     rutas = []
+    expandidas = []
     estados ={
         'Oradea':{'Zerind':71,'Sibiu':151},
         'Zerind':{'Arad':75,'Oradea':71},
@@ -45,7 +47,20 @@ class Mapa:
 
     # Expande la ciudad en las rutas que la contengan
     def expandirCiudad(self, ciudad):
-        pass
+        indices = []
+        for c in range(len(self.rutas)):
+            if ciudad in self.rutas[c] :
+                lst = self.rutas[c]
+                indices.append(c)
+                for i in self.getMapa()[ciudad].keys():
+                    if i not in self.expandidas:
+                        ls = []
+                        ls = ls + lst
+                        ls.append(i)
+                        self.rutas.append(ls)
+        for i in indices:
+            del self.rutas[i] 
+        self.expandidas.append(ciudad)
     
     # Lee las ciudades de origen y de destino
     def leerCiudades(self):
@@ -54,7 +69,9 @@ class Mapa:
         while (self.ciudadOrigen not in self.getMapa()):
             print('Ciudad de Origen no encontrada')
             self.ciudadOrigen = input('Ingrese una ciudad de Origen Válida: ')
-        self.rutas.append(self.ciudadOrigen)
+        ls=[]
+        ls.append(self.ciudadOrigen)
+        self.rutas.append(ls)
 
         # Leemos la ciudad de destino
         self.ciudadDestino = input('Ingrese la ciudad de Destino: ')
@@ -68,4 +85,12 @@ class Mapa:
 
 e = Mapa()
 e.leerCiudades() 
+e.expandirCiudad(e.ciudadOrigen)
 print(e.rutas)
+print(e.expandidas)
+e.expandirCiudad('Sibiu')
+print(e.rutas)
+print(e.expandidas)
+e.expandirCiudad('Rimnicu Vilcea')
+print(e.rutas)
+print(e.expandidas)
