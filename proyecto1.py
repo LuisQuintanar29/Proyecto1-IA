@@ -1,5 +1,4 @@
 
-
 class Mapa:
     rutas = []
     expandidas = []
@@ -52,6 +51,45 @@ class Mapa:
             for q in sorted(tempEstados[p]):
                 # Agregamos a los vecinos
                 self.estados[p][q] = tempEstados[p][q]
+
+    # Buscamos las rutas que lleguen a la misma ciudad
+    def buscarRepetidos(self):
+        aux = {}
+        rep = {}
+        for ruta in self.rutas:
+            if ruta[-1] not in aux:
+                aux[ruta[-1]] = 1
+            else:
+                aux[ruta[-1]] = aux[ruta[-1]] + 1
+        for k,v in aux.items():
+            if v > 1:
+                rep[k] = v
+        aux = {}
+        for i in rep:
+            aux[i] = []
+
+        for ruta in self.rutas:
+            for r in aux:
+                if ruta[-1] == r:
+                    aux[r].append(ruta[0])
+        for i in aux:
+            rep[i] = sorted(aux[i])
+        return rep
+
+    # Borramos rutas repetidas
+    def borrarRepetidos(self):
+        rep = self.buscarRepetidos().copy()
+        if len(rep) != 0:
+            j = 0
+            for ruta in self.rutas:
+                for k,v in rep.items():
+                    for d in v:
+                        if(k == ruta[-1] and ruta[0] == d and d !=v[0]):
+                            del self.rutas[j]
+                j = j+1
+
+            
+            
 
     # Expande la ciudad en las rutas que la contengan
     def expandirCiudad(self, ciudad):
@@ -112,29 +150,35 @@ class Mapa:
 
         # Leemos la ciudad de destino
         self.ciudadDestino = input('Ingrese la ciudad de Destino: ')
-        while (self.ciudadDestino not in self.getMapa()):
+        while (self.ciudadDestino not in self.getMapa() or self.ciudadDestino == self.ciudadOrigen):
             print('Ciudad de Destino no encontrada')
             self.ciudadDestino = input('Ingrese una ciudad de Destino Válida: ')
+    
+    # Imprime ciudades expandidas y lista de rutas
+    def imprimeDatos(self):
+        print("CIUDADES EXPANDIDAS")
+        print(e.expandidas)
+        print("RUTAS")
+        print(e.rutas)
+    
+    # Busqueda de Costo Uniforme
+    def BCU(self):
+        self.leerCiudades()
+
+        self.expandirCiudad(self.ciudadOrigen)
+        self.imprimeDatos()
+
+        while self.buscaRutaMenor() != self.ciudadDestino:
+            self.expandirCiudad(self.buscaRutaMenor())
+            self.imprimeDatos()
+            self.borrarRepetidos()
+
+            if self.buscaRutaMenor() == self.ciudadDestino:
+                print("RUTA MÍNIMA ENCONTRADA")
     
     # Constructor. Cuando se instancia un objeto, ordena el mapa
     def __init__(self): 
         self.ordenaMapa()
 
 e = Mapa()
-e.leerCiudades() 
-
-e.expandirCiudad(e.ciudadOrigen)
-print(e.expandidas)
-print(e.rutas)
-
-e.expandirCiudad(e.buscaRutaMenor())
-print(e.expandidas)
-print(e.rutas)
-
-e.expandirCiudad(e.buscaRutaMenor())
-print(e.expandidas)
-print(e.rutas)
-
-e.expandirCiudad(e.buscaRutaMenor())
-print(e.expandidas)
-print(e.rutas)
+e.BCU()
