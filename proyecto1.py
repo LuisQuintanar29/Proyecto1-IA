@@ -1,5 +1,8 @@
 
 
+from cgi import print_arguments
+
+
 class Mapa:
     # Lista de rutas posibles
     rutas = []
@@ -35,9 +38,13 @@ class Mapa:
     
     # Imprime cada Estados con sus vecinos y el costo
     def printMapa(self):
+        cad = "CIUDAD: \t \t VECINOS Y COSTOS DE VIAJE"
         for k in self.estados:
-            print(k,":",self.estados[k])
-   
+            cad = cad + "\n| {:<15} |".format(k)
+            for ciudad,costo in self.estados[k].items():
+                cad = cad+"{:<15}:{:3} | ".format(ciudad,costo)
+        print(cad)
+        
     # Ordena el mapa por orden alfanumerico, tanto los estados como sus vecinos
     def ordenaMapa(self):
         # Variable auxiliar
@@ -169,19 +176,19 @@ class Mapa:
     # Lee las ciudades de origen y de destino
     def leerCiudades(self):
         # Leemos la ciudad de origen
-        self.ciudadOrigen = input('Ingrese la ciudad de Origen: ')
+        self.ciudadOrigen = input('IINGRESE LA CIUDAD DE ORIGEN: ')
         while (self.ciudadOrigen not in self.getMapa()):
-            print('Ciudad de Origen no encontrada')
-            self.ciudadOrigen = input('Ingrese una ciudad de Origen Válida: ')
+            print('CIUDAD DE ORIGEN NO ENCONTRADA')
+            self.ciudadOrigen = input('INGRESE UNA CIUDAD DE ORIGEN VÁLIDA: ')
         ls=[0]
         ls.append(self.ciudadOrigen)
         self.rutas.append(ls)
 
         # Leemos la ciudad de destino
-        self.ciudadDestino = input('Ingrese la ciudad de Destino: ')
+        self.ciudadDestino = input('INGRESE LA CIUDAD DE DESTINO: ')
         while (self.ciudadDestino not in self.getMapa() or self.ciudadDestino == self.ciudadOrigen):
-            print('Ciudad de Destino no encontrada')
-            self.ciudadDestino = input('Ingrese una ciudad de Destino Válida: ')
+            print('CIUDAD DE DESTINO NO ENCONTRADA')
+            self.ciudadDestino = input('INGRESE UNA CIUDAD DE DESTINO VÁLIDA: ')
     
     # Imprime ciudades expandidas y lista de rutas
     def imprimeDatos(self):
@@ -239,7 +246,10 @@ class Mapa:
     def __init__(self): 
         self.ordenaMapa()
 
-# Creamos un mapa
-e = Mapa()
-# Iniciamos el algoritmo de Búsqueda de Costo Uniforme
-e.BCU()
+if __name__ == "__main__":
+    # Creamos un mapa
+    e = Mapa()
+    # Imprimimos el mapa
+    e.printMapa()
+    # Iniciamos el algoritmo de Búsqueda de Costo Uniforme
+    e.BCU()
